@@ -1,0 +1,23 @@
+apiVersion: longhorn-volume-manager/v1
+kind: LonghornVolumeSpec
+metadata:
+  name: longhorn-volumes
+  namespace: storage
+spec:
+  volumes:
+    jdownloader-config:
+      namespace: vpn-apps
+      size: 512Mi
+      restore: true
+      createPVC: true
+      groups:
+        - weekly
+        - daily
+    nzbget-config:
+      namespace: vpn-apps
+      size: 512Mi
+      restore: true
+      createPVC: true
+      groups:
+        - weekly
+
