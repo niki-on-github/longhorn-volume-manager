@@ -31,7 +31,7 @@ RUN pip install -q -r requirements.txt
 ENV VOLUME_CONFIG_PATH="${configPath}/volumes.yaml"
 ENV LONGHORN_URL="http://longhorn-frontend.longhorn-system/v1"
 
-COPY volume-manager.py .
+COPY volume-setup.py .
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
