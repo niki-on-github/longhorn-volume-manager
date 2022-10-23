@@ -103,7 +103,7 @@ class LonghornClient(longhorn.Client):
         self.wait_for_volume_creation(volume_name)
         for _ in range(self.retry_counts):
             volume = self.by_id_volume(volume_name)
-            self.logger.info(f"Volume {volume_name} state: %s", str(volume["state"]))
+            self.logger.debug(f"Volume {volume_name} state: %s", str(volume["state"]))
             if volume["state"] == value:
                 return volume
             time.sleep(self.retry_inverval_in_seconds)
@@ -111,6 +111,7 @@ class LonghornClient(longhorn.Client):
 
 
     def wait_for_volume_detached(self, volume_name: str) -> dict:
+        self.logger.info(f"Wait for volume {volume_name} state=detached")
         return self.wait_for_volume_status(volume_name, self.VOLUME_STATE_DETACHED)
 
 
@@ -122,7 +123,7 @@ class LonghornClient(longhorn.Client):
             ks = json.loads(json.dumps(ks, default=lambda o: o.__dict__))
 
             for k, v in expect_ks.items():
-                self.logger.info(f"{volume_name} {k}: {ks[k]}")
+                self.logger.debug(f"{volume_name} {k}: {ks[k]}")
                 if k in ('lastPVCRefAt', 'lastPodRefAt'):
                     if (v != '' and ks[k] == '') or (v == '' and ks[k] != ''):
                         expected = False
@@ -149,6 +150,7 @@ class LonghornClient(longhorn.Client):
             'lastPVCRefAt': '',
             'lastPodRefAt': '',
         }
+        self.logger.info(f"Wait for PV {pv_name}")
         self.wait_volume_kubernetes_status(volume.name, ks)
 
 
@@ -159,6 +161,7 @@ class LonghornClient(longhorn.Client):
             'pvStatus': 'Bound',
             'lastPVCRefAt': '',
         }
+        self.logger.info(f"Wait for PVC {pvc_name}")
         self.wait_volume_kubernetes_status(volume.name, ks)
 
 
@@ -178,8 +181,10 @@ class LonghornClient(longhorn.Client):
         restore = config["restore"] if "restore" in config else False
         backup = self.get_backup_by_volume_name(volume_name)
         if backup and restore:
+            self.logger.info(f"Use existing backup for volume: {volume_name}")
             self.create_volume(name=volume_name, size=config["size"], fromBackup=backup.url)
         else:
+            self.logger.info(f"Create new empty volume: {volume_name}")
             self.create_volume(name=volume_name, size=config["size"])
 
         self.wait_detached_volumes[volume_name] = json.loads(backup.labels.KubernetesStatus) \
@@ -277,7 +282,7 @@ class LonghornVolumeManager:
             self.client.prepare_volume(volume_id, self.config["spec"]["volumes"][volume_id])
         for volume_id in self.config["spec"]["volumes"]:
             self.client.finalize_volume(volume_id, self.config["spec"]["volumes"][volume_id])
-        self.logger.info("volume setup completed")
+        self.logger.info("Volume setup completed")
         time.sleep(1)
 
 
