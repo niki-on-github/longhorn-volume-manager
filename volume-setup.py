@@ -103,7 +103,7 @@ class LonghornClient(longhorn.Client):
         self.wait_for_volume_creation(volume_name)
         for _ in range(self.retry_counts):
             volume = self.by_id_volume(volume_name)
-            self.logger.info(f"Volume {volume_name} state:", volume["state"])
+            self.logger.info(f"Volume {volume_name} state: %s", str(volume["state"]))
             if volume["state"] == value:
                 return volume
             time.sleep(self.retry_inverval_in_seconds)
