@@ -20,4 +20,5 @@ spec:
       createPVC: true
       groups:
         - weekly
+        - daily
 

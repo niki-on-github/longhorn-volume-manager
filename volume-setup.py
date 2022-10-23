@@ -111,7 +111,7 @@ class LonghornClient(longhorn.Client):
 
 
     def wait_for_volume_detached(self, volume_name: str) -> dict:
-        self.logger.info(f"Wait for volume {volume_name} state=detached")
+        self.logger.info(f"Wait for volume {volume_name} in detached state")
         return self.wait_for_volume_status(volume_name, self.VOLUME_STATE_DETACHED)
 
 
@@ -207,14 +207,14 @@ class LonghornClient(longhorn.Client):
 
         if createPV:
             pvName = config["pvName"] if "pvName" in config else volume_name
-            self.create_pv_for_volume(volume, pvName)
             self.logger.info(f"Create PersistentVolume {pvName}")
+            self.create_pv_for_volume(volume, pvName)
 
         if createPVC:
             pvcName = config["pvcName"] if "pvcName" in config else volume_name
             pvcNamespace = config["namespace"]
-            self.create_pvc_for_volume(volume, pvcNamespace, pvcName)
             self.logger.info(f"Create PersistentVolumeClaim {pvcNamespace}/{pvcName}")
+            self.create_pvc_for_volume(volume, pvcNamespace, pvcName)
 
         del self.wait_detached_volumes[volume_name]
 
