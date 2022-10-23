@@ -209,6 +209,8 @@ class LonghornClient(longhorn.Client):
             pvName = config["pvName"] if "pvName" in config else volume_name
             self.logger.info(f"Create PersistentVolume {pvName}")
             self.create_pv_for_volume(volume, pvName)
+            self.logger.info(f"Label PV {pvName} with app={pvName}")
+            os.system(f"kubectl label pv {pvName} app={pvName}")
 
         if createPVC:
             pvcName = config["pvcName"] if "pvcName" in config else volume_name
