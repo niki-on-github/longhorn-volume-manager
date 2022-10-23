@@ -178,8 +178,10 @@ class LonghornClient(longhorn.Client):
         restore = config["restore"] if "restore" in config else False
         backup = self.get_backup_by_volume_name(volume_name)
         if backup and restore:
+            self.logger.info(f"Use existing backup for volume: {volume_name}")
             self.create_volume(name=volume_name, size=config["size"], fromBackup=backup.url)
         else:
+            self.logger.info(f"Create new empty volume: {volume_name}")
             self.create_volume(name=volume_name, size=config["size"])
 
         self.wait_detached_volumes[volume_name] = json.loads(backup.labels.KubernetesStatus) \
