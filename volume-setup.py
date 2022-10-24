@@ -220,10 +220,11 @@ class LonghornClient(longhorn.Client):
                 self.logger.info(f"Add claimRef {claimRef} to PV {pvName}")
                 patch_file = tempfile.TemporaryFile(suffix='.yaml')
                 os.system(f"kubectl get pv {pvName} -n {pvcNamespace} -o yaml > {patch_file.name}")
-
+                os.system(f"cat {patch_file.name}")
                 with open(patch_file.name, 'r') as fd:
                     patch = yaml.safe_load(fd)
 
+                print("patch", patch)
                 patch["spec"]["claimRef"] = {
                     "apiVersion": "v1",
                     "kind": "PersistentVolumeClaim",
@@ -234,6 +235,7 @@ class LonghornClient(longhorn.Client):
                 with open(patch_file.name, 'w') as fd:
                     yaml.dump(patch, fd)
 
+                os.system(f"cat {patch_file.name}")
                 os.system(f"kubectl replace -f {patch_file.name}")
                 patch_file.close()
 
