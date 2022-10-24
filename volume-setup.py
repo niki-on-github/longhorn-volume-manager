@@ -220,13 +220,12 @@ class LonghornClient(longhorn.Client):
                 self.logger.info(f"Add claimRef {claimRef} to PV {pvName}")
                 patch_file = 'override.yaml'
                 os.system(f"kubectl get pv {pvName} -n {pvcNamespace} -o yaml > {patch_file}")
-                os.system(f"cat {patch_file}")
+                # os.system(f"cat {patch_file}")
                 with open(patch_file, 'r') as fd:
                     patch = yaml.safe_load(fd)
                     if patch is None:
-                        print(fd.readlines())
+                        self.logger.error("yaml parser failed for content: %s", str(fd.readlines()))
 
-                print("patch", patch)
                 patch["spec"]["claimRef"] = {
                     "apiVersion": "v1",
                     "kind": "PersistentVolumeClaim",
@@ -237,8 +236,9 @@ class LonghornClient(longhorn.Client):
                 with open(patch_file, 'w') as fd:
                     yaml.dump(patch, fd)
 
-                os.system(f"cat {patch_file}")
+                # os.system(f"cat {patch_file}")
                 os.system(f"kubectl replace -f {patch_file}")
+                os.remove(patch_file)
 
 
         if createPVC:
