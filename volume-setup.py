@@ -223,6 +223,8 @@ class LonghornClient(longhorn.Client):
                 os.system(f"cat {patch_file.name}")
                 with open(patch_file.name, 'r') as fd:
                     patch = yaml.safe_load(fd)
+                    if patch is None:
+                        print(fd.readlines())
 
                 print("patch", patch)
                 patch["spec"]["claimRef"] = {
