@@ -1,5 +1,5 @@
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
   name: longhorn-volume-setup
   namespace: storage
@@ -7,7 +7,7 @@ metadata:
     kustomize.toolkit.fluxcd.io/prune: disabled
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
+  kind: ClusterRole
   name: longhorn-volume-setup-role
 subjects:
   - kind: ServiceAccount

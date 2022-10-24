@@ -3,6 +3,7 @@ import warnings
 import contextlib
 import requests
 import traceback
+import tempfile
 import json
 import logging
 import os
@@ -211,6 +212,31 @@ class LonghornClient(longhorn.Client):
             self.create_pv_for_volume(volume, pvName)
             self.logger.info(f"Label PV {pvName} with app={pvName}")
             os.system(f"kubectl label pv {pvName} app={pvName}")
+            self.logger.info(f"Label PV {pvName} with app.kubernetes.io/name={pvName}")
+            os.system(f"kubectl label pv {pvName} app.kubernetes.io/name={pvName}")
+            if "claimRef" in config:
+                pvcNamespace = config["namespace"]
+                claimRef = config["claimRef"]
+                self.logger.info(f"Add claimRef {claimRef} to PV {pvName}")
+                patch_file = tempfile.TemporaryFile(suffix='.yaml')
+                os.system(f"kubectl get pv {pvName} -n {pvcNamespace} -o yaml > {patch_file.name}")
+
+                with open(patch_file.name, 'r') as fd:
+                    patch = yaml.safe_load(fd)
+
+                patch["spec"]["claimRef"] = {
+                    "apiVersion": "v1",
+                    "kind": "PersistentVolumeClaim",
+                    "name": claimRef,
+                    "namespace": pvcNamespace
+                }
+
+                with open(patch_file.name, 'w') as fd:
+                    yaml.dump(patch, fd)
+
+                os.system(f"kubectl replace -f {patch_file.name}")
+                patch_file.close()
+
 
         if createPVC:
             pvcName = config["pvcName"] if "pvcName" in config else volume_name
