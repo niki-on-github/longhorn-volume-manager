@@ -13,7 +13,7 @@ spec:
       containers:
       - name: longhorn-volume-setup
         imagePullPolicy: Always
-        image: ghcr.io/niki-on-github/longhorn-volume-manager:dev
+        image: ghcr.io/niki-on-github/longhorn-volume-manager:v1.0.0
         env:
         - name: LONGHORN_URL
           value: http://longhorn-frontend.storage/v1
