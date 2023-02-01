@@ -38,18 +38,18 @@ jobs:
           # :v1.0.0,:v1,:latest
           TAGS="${TAGS},${REGISTRY_IMAGE}:latest"
         fi
-        echo name=tags::${TAGS} >> $GITHUB_OUTPUT
+        echo "name=tags::${TAGS}" >> $GITHUB_OUTPUT
 
         if [ "${{github.event_name}}" == "pull_request" ]; then
-          echo name=push::false >> $GITHUB_OUTPUT
-          echo name=cache_from::"type=registry,ref=${REGISTRY_IMAGE}:buildcache" >> $GITHUB_OUTPUT
-          echo name=cache_to::"" >> $GITHUB_OUTPUT
+          echo 'name=push::false' >> $GITHUB_OUTPUT
+          echo "name=cache_from::\"type=registry,ref=${REGISTRY_IMAGE}:buildcache\"" >> $GITHUB_OUTPUT
+          echo 'name=cache_to::""' >> $GITHUB_OUTPUT
         else
-          echo name=push::true >> $GITHUB_OUTPUT
-          echo name=cache_from::"type=registry,ref=${REGISTRY_IMAGE}:buildcache" >> $GITHUB_OUTPUT
-          echo name=cache_to::"type=registry,ref=${REGISTRY_IMAGE}:buildcache,mode=max" >> $GITHUB_OUTPUT
+          echo 'name=push::true' >> $GITHUB_OUTPUT
+          echo "name=cache_from::\"type=registry,ref=${REGISTRY_IMAGE}:buildcache\"" >> $GITHUB_OUTPUT
+          echo "name=cache_to::\"type=registry,ref=${REGISTRY_IMAGE}:buildcache,mode=max\"" >> $GITHUB_OUTPUT
         fi
-        echo name=github_server_url::"${GITHUB_SERVER_URL}" >> $GITHUB_OUTPUT
+        echo "name=github_server_url::\"${GITHUB_SERVER_URL}\"" >> $GITHUB_OUTPUT
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
