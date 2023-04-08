@@ -139,7 +139,7 @@ class LonghornClient(longhorn.Client):
                             if not any(x == v for x in ks[k]):
                                 expected = False
                                 break
-                    if ks[k] != v:
+                    elif ks[k] != v:
                         expected = False
                         break
             if expected:
