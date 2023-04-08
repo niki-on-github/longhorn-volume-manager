@@ -147,7 +147,10 @@ class LonghornClient(longhorn.Client):
 
 
     def create_pv_for_volume(self, volume, pv_name, fs_type="ext4") -> None:
-        volume.pvCreate(pvName=pv_name, fsType=fs_type)
+        try:
+            volume.pvCreate(pvName=pv_name, fsType=fs_type)
+        except Exception as ex:
+            self.logger.info(str(ex))
 
         ks = {
             'pvName': pv_name,
@@ -160,7 +163,10 @@ class LonghornClient(longhorn.Client):
 
 
     def create_pvc_for_volume(self, volume, pvc_namespace:str, pvc_name: str) -> None:
-        volume.pvcCreate(namespace=pvc_namespace, pvcName=pvc_name)
+        try:
+            volume.pvcCreate(namespace=pvc_namespace, pvcName=pvc_name)
+        except Exception as ex:
+            self.logger.info(str(ex))
 
         ks = {
             'pvStatus': 'Bound',
