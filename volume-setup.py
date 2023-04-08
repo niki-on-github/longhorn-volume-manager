@@ -134,6 +134,11 @@ class LonghornClient(longhorn.Client):
                         expected = False
                         break
                 else:
+                    if k == "pvStatus":
+                        if isinstance(ks[k], list):
+                            if not any(x == v for x in ks[k]):
+                                expected = False
+                                break
                     if ks[k] != v:
                         expected = False
                         break
@@ -154,7 +159,7 @@ class LonghornClient(longhorn.Client):
 
         ks = {
             'pvName': pv_name,
-            'pvStatus': 'Available',
+            'pvStatus': ['Available', 'Bound'],
             'lastPVCRefAt': '',
             'lastPodRefAt': '',
         }
