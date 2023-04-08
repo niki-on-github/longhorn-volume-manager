@@ -58,7 +58,7 @@ class LonghornClient(longhorn.Client):
         super().__init__(url=url)
         self.logger = logging.getLogger(__name__)
         self.retry_inverval_in_seconds = 1
-        self.retry_counts = 120
+        self.retry_counts = 180
         self.wait_detached_volumes = {}
 
 
@@ -175,13 +175,12 @@ class LonghornClient(longhorn.Client):
 
 
     def prepare_volume(self, volume_name: str, config: dict):
-        if self.by_id_volume(id=volume_name):
-            self.logger.info(f"Volume '{volume_name}' already exists, skipping")
-            return
-
         restore = config["restore"] if "restore" in config else False
         backup = self.get_backup_by_volume_name(volume_name)
-        if backup and restore:
+
+        if self.by_id_volume(id=volume_name):
+            self.logger.info(f"Volume '{volume_name}' already exists, skip create volume process")
+        elif backup and restore:
             self.logger.info(f"Use existing backup for volume: {volume_name}")
             self.create_volume(name=volume_name, size=config["size"], fromBackup=backup.url)
         else:
