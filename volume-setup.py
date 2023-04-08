@@ -117,7 +117,7 @@ class LonghornClient(longhorn.Client):
 
     def wait_for_volume_detached_or_atached(self, volume_name: str) -> dict:
         self.logger.info(f"Wait for volume {volume_name} in detached/attached state")
-        return self.wait_for_volume_status(volume_name, self.VOLUME_STATE_DETACHED)
+        return self.wait_for_volume_status(volume_name, [self.VOLUME_STATE_ATTACHED, self.VOLUME_STATE_DETACHED])
 
 
     def wait_volume_kubernetes_status(self, volume_name: str, expect_ks: dict) -> None:
