@@ -136,8 +136,8 @@ class LonghornClient(longhorn.Client):
                         break
                 else:
                     if k == "pvStatus":
-                        if isinstance(expect_ks[k], list):
-                            if not any(x == v for x in expect_ks[k]):
+                        if isinstance(v, list):
+                            if not any(x == ks[k] for x in v):
                                 expected = False
                                 break
                             else:
