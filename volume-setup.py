@@ -121,6 +121,7 @@ class LonghornClient(longhorn.Client):
 
 
     def wait_volume_kubernetes_status(self, volume_name: str, expect_ks: dict) -> None:
+        ks = None
         for _ in range(self.retry_counts):
             expected = True
             volume = self.by_id_volume(volume_name)
@@ -135,8 +136,8 @@ class LonghornClient(longhorn.Client):
                         break
                 else:
                     if k == "pvStatus":
-                        if isinstance(ks[k], list):
-                            if not any(x == v for x in ks[k]):
+                        if isinstance(expect_ks[k], list):
+                            if not any(x == v for x in expect_ks[k]):
                                 expected = False
                                 break
                             else:
@@ -151,7 +152,7 @@ class LonghornClient(longhorn.Client):
             time.sleep(self.retry_inverval_in_seconds)
 
         if not expected:
-            raise TimeoutError(f"{volume_name} volume does not satisfy condition {expect_ks}")
+            raise TimeoutError(f"{volume_name} volume does not satisfy condition {expect_ks} in {ks}")
 
 
     def create_pv_for_volume(self, volume, pv_name, fs_type="ext4") -> None:
