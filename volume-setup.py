@@ -100,19 +100,23 @@ class LonghornClient(longhorn.Client):
         raise FileNotFoundError(f"{volume_name} not found")
 
 
-    def wait_for_volume_status(self, volume_name: str, value: str) -> dict:
+    def wait_for_volume_status(self, volume_name: str, value) -> dict:
         self.wait_for_volume_creation(volume_name)
         for _ in range(self.retry_counts):
             volume = self.by_id_volume(volume_name)
             self.logger.debug(f"Volume {volume_name} state: %s", str(volume["state"]))
-            if volume["state"] == value:
-                return volume
+            if isinstance(value, list):
+                if any(volume["state"] == x for x in value):
+                    return volume
+            else:
+                if volume["state"] == value:
+                    return volume
             time.sleep(self.retry_inverval_in_seconds)
         raise TimeoutError(f"{volume_name} volume does not satisfy condition {value}")
 
 
-    def wait_for_volume_detached(self, volume_name: str) -> dict:
-        self.logger.info(f"Wait for volume {volume_name} in detached state")
+    def wait_for_volume_detached_or_atached(self, volume_name: str) -> dict:
+        self.logger.info(f"Wait for volume {volume_name} in detached/attached state")
         return self.wait_for_volume_status(volume_name, self.VOLUME_STATE_DETACHED)
 
 
