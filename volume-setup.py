@@ -282,7 +282,13 @@ class LonghornVolumeManager:
         start_delay_in_seconds = int(str(os.getenv('START_DELAY_IN_SECONDS', 0)))
         if start_delay_in_seconds > 0:
             self.logger.info('Wait %d seconds', start_delay_in_seconds)
-            time.sleep(start_delay_in_seconds)
+            remaining_start_delay = start_delay_in_seconds
+            while remaining_start_delay > 10:
+                time.sleep(10)
+                remaining_start_delay -= 10
+                self.logger.info('Wait %d seconds left', remaining_start_delay)
+            if remaining_start_delay > 0:
+                time.sleep(remaining_start_delay)
 
 
     def _load_config(self, config_path: str) -> None:
