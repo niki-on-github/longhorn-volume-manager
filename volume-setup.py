@@ -203,7 +203,7 @@ class LonghornClient(longhorn.Client):
         createPVC = config["createPVC"] if "createPVC" in config else False
         groups = config["groups"] if "groups" in config else []
 
-        volume = self.wait_for_volume_detached(volume_name)
+        volume = self.wait_for_volume_detached_or_atached(volume_name)
         if groups:
             for groupName in groups:
                 self.logger.info(f"Assign group {groupName} to volume {volume_name}")
