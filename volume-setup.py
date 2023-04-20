@@ -58,7 +58,7 @@ class LonghornClient(longhorn.Client):
         super().__init__(url=url)
         self.logger = logging.getLogger(__name__)
         self.retry_inverval_in_seconds = 1
-        self.retry_counts = 180
+        self.retry_counts = 120
         self.wait_detached_volumes = {}
 
 
@@ -152,7 +152,8 @@ class LonghornClient(longhorn.Client):
             time.sleep(self.retry_inverval_in_seconds)
 
         if not expected:
-            raise TimeoutError(f"{volume_name} volume does not satisfy condition {expect_ks} in {ks}")
+            self.logger.error(f"{volume_name} volume does not satisfy condition {expect_ks} in {ks}")
+            # raise TimeoutError(f"{volume_name} volume does not satisfy condition {expect_ks} in {ks}")
 
 
     def create_pv_for_volume(self, volume, pv_name, fs_type="ext4") -> None:
