@@ -149,7 +149,7 @@ class LonghornClient(longhorn.Client):
             if expected:
                 break
 
-            self.logger.info("%s: %s", volume_name, str(ks))
+            self.logger.info("%s: %s, expected: %s", volume_name, str(ks), str(expect_ks))
             time.sleep(self.retry_inverval_in_seconds)
 
         if not expected:
