@@ -165,9 +165,7 @@ class LonghornClient(longhorn.Client):
 
         ks = {
             'pvName': pv_name,
-            'pvStatus': ['Available', 'Bound'],
-            'lastPVCRefAt': '',
-            'lastPodRefAt': '',
+            'pvStatus': ['Available', 'Bound']
         }
         self.logger.info(f"Wait for PV {pv_name}")
         self.wait_volume_kubernetes_status(volume.name, ks)
@@ -180,8 +178,7 @@ class LonghornClient(longhorn.Client):
             self.logger.info(str(ex))
 
         ks = {
-            'pvStatus': 'Bound',
-            'lastPVCRefAt': '',
+            'pvStatus': 'Bound'
         }
         self.logger.info(f"Wait for PVC {pvc_name}")
         self.wait_volume_kubernetes_status(volume.name, ks)
