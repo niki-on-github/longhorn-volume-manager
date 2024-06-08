@@ -1,5 +1,8 @@
 # Longhorn Volume Manager
 
+> [!WARNING]  
+> This repository is/was a proof of concept which is no longer used in my homelab ([nixos-k3s](https://github.com/niki-on-github/nixos-k3s)).
+
 Simple longhorn volume manager that is able to reuse volumes from latest backups, at cluster recreation
 
 ## Variables
